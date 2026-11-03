@@ -5,7 +5,8 @@ PostmarketOS rootfs build ci in GitHub
 
 ## Supported device
 - xiaomi-raphael
-- xiaomi-lmi(Not add upstream yet)
+- xiaomi-lmi (Not add upstream yet)
+- xiaomi-begonia
 
 > [!NOTE]
 > 
