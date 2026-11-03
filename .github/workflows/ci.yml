@@ -22,7 +22,7 @@ jobs:
           - device: xiaomi-raphael
             devicesrc: ''
           - device: xiaomi-begonia
-            devicesrc: ''
+            devicesrc: https://github.com/criollojoel10/begonia-pmos-tianma
 
     uses: ./.github/workflows/main.yml
     with:

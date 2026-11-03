@@ -57,8 +57,24 @@ jobs:
           # Only clone device repo if devicesrc provided AND pmaports doesn't have it
           if [ -n "${{ inputs.devicesrc }}" ] && [ ! -d "${DEVICE_DIR}/${DEVICE_PKG}" ]; then
             git clone --depth=1 ${{ inputs.devicesrc }} /tmp/device-pkg
-            cp -r /tmp/device-pkg/* "${DEVICE_DIR}/"
-            echo "device_repo_cloned=true" >> $GITHUB_ENV
+
+            # Probe common layouts: repo root contains packages, or nested under overlay/
+            PKG_SRC=""
+            if [ -d "/tmp/device-pkg/${DEVICE_PKG}" ]; then
+              PKG_SRC="/tmp/device-pkg"
+            elif [ -d "/tmp/device-pkg/.github/overlay/pmaports/device/testing/${DEVICE_PKG}" ]; then
+              PKG_SRC="/tmp/device-pkg/.github/overlay/pmaports/device/testing"
+            elif [ -d "/tmp/device-pkg/device/testing/${DEVICE_PKG}" ]; then
+              PKG_SRC="/tmp/device-pkg/device/testing"
+            fi
+
+            if [ -n "${PKG_SRC}" ]; then
+              cp -r "${PKG_SRC}"/* "${DEVICE_DIR}/"
+              echo "device_repo_cloned=true" >> $GITHUB_ENV
+            else
+              echo "WARNING: Could not find ${DEVICE_PKG} inside cloned repo" >&2
+              echo "device_repo_cloned=false" >> $GITHUB_ENV
+            fi
           else
             echo "device_repo_cloned=false" >> $GITHUB_ENV
           fi
